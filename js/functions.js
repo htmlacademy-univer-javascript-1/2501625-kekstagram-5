@@ -1,12 +1,12 @@
-function check_length (line, len) {
+function checkLength (line, len) {
   return line.length <= len;
 }
 
-function check_palidrome (line) {
+function checkPalidrome (line) {
   return line.split(' ').join('').toLowerCase() === line.split(' ').join('').split('').reverse().join('').toLowerCase();
 }
 
-function find_numbers (line) {
+function findNumbers (line) {
   const rez = line.toString();
   let count = '';
   for (let i = 0; i < rez.length; i++) {

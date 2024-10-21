@@ -44,17 +44,17 @@ function genComments(count) {
   for (let i = 0; i < count; i++) {
 
     let id = Math.floor(Math.random() * (1000 - 1 + 1) + 1);
-    const idUsers = userComments.map(use => use.id);
+    const idUsers = userComments.map((x) => x.id);
     while (idUsers.includes(id)) {
       id = Math.floor(Math.random() * (1000 - 1 + 1) + 1);
     }
 
-    let user = {
+    const user = {
       id: id,
       avatar: `img/avatar-${Math.floor(Math.random() * (6 - 1 + 1) + 1)}.svg`,
       message: commentText[Math.floor(Math.random() * commentText.length)],
       name: names[Math.floor(Math.random() * names.length)],
-    }
+    };
     userComments.push(user);
   }
   return userComments;
@@ -65,11 +65,11 @@ function createPhotoArray() {
   const photos = [];
   for (let i = 1; i <= 25; i++) {
     const photo = {
-        id: i,
-        url: `photos/${i}.jpg`,
-        description: descriptions[Math.floor(Math.random() * descriptions.length)],
-        likes: Math.floor(Math.random() * (200 - 15 + 1) + 15),
-        comments: genComments(Math.floor(Math.random() * 31)),
+      id: i,
+      url: `photos/${i}.jpg`,
+      description: descriptions[Math.floor(Math.random() * descriptions.length)],
+      likes: Math.floor(Math.random() * (200 - 15 + 1) + 15),
+      comments: genComments(Math.floor(Math.random() * 31)),
     };
     photos.push(photo);
   }

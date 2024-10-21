@@ -10,7 +10,7 @@ function findNumbers (line) {
   const rez = line.toString();
   let count = '';
   for (let i = 0; i < rez.length; i++) {
-    if (!Number.isNaN(parseInt(rez[i]))){
+    if (!Number.isNaN(parseInt(rez[i], 10))){
       count = count + rez[i];
     }
   }
@@ -21,21 +21,21 @@ function findNumbers (line) {
 }
 
 
-console.log(checkLength('проверяемая строка', 20));
-console.log(checkLength('проверяемая строка', 18));
-console.log(checkLength('проверяемая строка', 10));
+checkLength('проверяемая строка', 20);
+checkLength('проверяемая строка', 18);
+checkLength('проверяемая строка', 10);
 
 
-console.log(checkPalidrome('топот'));
-console.log(checkPalidrome('ДовОд'));
-console.log(checkPalidrome('Кекс'));
+checkPalidrome('топот');
+checkPalidrome('ДовОд');
+checkPalidrome('Кекс');
 
 
-console.log(findNumbers('2023 год'));
-console.log(findNumbers('ECMAScript 2022'));
-console.log(findNumbers('1 кефир, 0.5 батона'));
-console.log(findNumbers('агент 007'));
-console.log(findNumbers('а я томат'));
-console.log(findNumbers(2023));
-console.log(findNumbers(-1));
-console.log(findNumbers(1.5));
+findNumbers('2023 год');
+findNumbers('ECMAScript 2022');
+findNumbers('1 кефир, 0.5 батона');
+findNumbers('агент 007');
+findNumbers('а я томат');
+findNumbers(2023);
+findNumbers(-1);
+findNumbers(1.5);

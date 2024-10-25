@@ -49,40 +49,40 @@ const names = ['Алексей', 'Екатерина', 'Иван', 'Ольга',
   'Марина', 'Андрей', 'Наталья', 'Александр', 'Елена', 'Максим', 'Светлана', 'Владимир'];
 
 
-  function generateComments(count) {
-    const userComments = [];
-    for (let i = 0; i < count; i++) {
-      let id = getRandomInt(MIN_COMMENT_ID, MAX_COMMENT_ID);
-      const idUsers = userComments.map((x) => x.id);
-      while (idUsers.includes(id)) {
-        id = getRandomInt(MIN_COMMENT_ID, MAX_COMMENT_ID);
-      }
-
-      const user = {
-        id: id,
-        avatar: `img/avatar-${getRandomInt(1, AVATAR_COUNT)}.svg`,
-        message: getRandomElement(commentText),
-        name: getRandomElement(names),
-      };
-      userComments.push(user);
+function generateComments(count) {
+  const userComments = [];
+  for (let i = 0; i < count; i++) {
+    let id = getRandomInt(MIN_COMMENT_ID, MAX_COMMENT_ID);
+    const idUsers = userComments.map((x) => x.id);
+    while (idUsers.includes(id)) {
+      id = getRandomInt(MIN_COMMENT_ID, MAX_COMMENT_ID);
     }
-    return userComments;
+
+    const user = {
+      id: id,
+      avatar: `img/avatar-${getRandomInt(1, AVATAR_COUNT)}.svg`,
+      message: getRandomElement(commentText),
+      name: getRandomElement(names),
+    };
+    userComments.push(user);
   }
+  return userComments;
+}
 
 
-  function createPhotoArray() {
-    const photos = [];
-    for (let i = 1; i <= PHOTO_COUNT; i++) {
-      const photo = {
-        id: i,
-        url: `photos/${i}.jpg`,
-        description: getRandomElement(descriptions),
-        likes: getRandomInt(MIN_LIKES, MAX_LIKES),
-        comments: generateComments(getRandomInt(0, MAX_COMMENTS)),
-      };
-      photos.push(photo);
-    }
-    return photos;
+function createPhotoArray() {
+  const photos = [];
+  for (let i = 1; i <= PHOTO_COUNT; i++) {
+    const photo = {
+      id: i,
+      url: `photos/${i}.jpg`,
+      description: getRandomElement(descriptions),
+      likes: getRandomInt(MIN_LIKES, MAX_LIKES),
+      comments: generateComments(getRandomInt(0, MAX_COMMENTS)),
+    };
+    photos.push(photo);
   }
+  return photos;
+}
 
-  export{createPhotoArray};
+export{createPhotoArray};

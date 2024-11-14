@@ -1,7 +1,7 @@
 import { createPhotoArray } from './data.js';
 
 
-const picturesContainer  = document.querySelector('.pictures');
+const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content;
 const fragment = document.createDocumentFragment();
 
@@ -18,19 +18,19 @@ function createMiniPicture(photo){
   comments.textContent = photo.comments.length;
 
   return picture;
-};
+}
 
 
 function drawMiniature() {
   const photos = createPhotoArray();
 
-  photos.forEach(photo => {
+  photos.forEach((photo) => {
     const pictureElement = createMiniPicture(photo);
     fragment.appendChild(pictureElement);
   });
 
   picturesContainer .appendChild(fragment);
-};
+}
 
 
 export{drawMiniature};

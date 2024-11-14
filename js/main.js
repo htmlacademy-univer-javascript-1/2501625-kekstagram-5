@@ -1,3 +1,3 @@
-import { createPhotoArray } from './data.js';
+import {drawMiniature} from './draw_miniature.js';
 
-createPhotoArray();
+drawMiniature();

@@ -7,16 +7,16 @@ const socialCaption = bigPicture.querySelector('.social__caption');
 const closeButton = bigPicture.querySelector('#picture-cancel');
 const commentCountBlock = bigPicture.querySelector('.social__comment-count');
 const commentsLoader = bigPicture.querySelector('.comments-loader');
-const comments_step = 5; // шаг показа комментариев
+const commentsStep = 5; // шаг показа комментариев
 
 let commentsToShow = []; // хранение комментариев фотографии
 let displayedCommentsCount = 0; // количество отображённых комментариев
 
 function endWordComment(number){
-  if (number % 10 === 1 && number % 100 != 11){
-    return 'комментария'
+  if (number % 10 === 1 && number % 100 !== 11){
+    return 'комментария';
   }
-  return 'комментариев'
+  return 'комментариев';
 }
 
 // Функция для создания DOM элемента комментария
@@ -44,7 +44,7 @@ function createCommentElement(comment) {
 // Функция для отображения комментариев частями
 function renderComments() {
   const fragment = document.createDocumentFragment();
-  const nextComments = commentsToShow.slice(displayedCommentsCount, displayedCommentsCount + comments_step);
+  const nextComments = commentsToShow.slice(displayedCommentsCount, displayedCommentsCount + commentsStep);
 
   nextComments.forEach((comment) => {
     const commentElement = createCommentElement(comment);
@@ -112,7 +112,6 @@ function closeBigPicture() {
 
 // Событие на кнопку закрытия
 closeButton.addEventListener('click', closeBigPicture);
-
 
 
 // Событие для загрузки дополнительных комментариев

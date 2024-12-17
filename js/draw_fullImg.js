@@ -12,15 +12,16 @@ const COMMENTS_STEP = 5; // шаг показа комментариев
 let commentsToShow = []; // хранение комментариев фотографии
 let displayedCommentsCount = 0; // количество отображённых комментариев
 
-function endWordComment(number){
-  if (number % 10 === 1 && number % 100 !== 11){
+// Функция для склонения слова "комментарий"
+const endWordComment = (number) => {
+  if (number % 10 === 1 && number % 100 !== 11) {
     return 'комментария';
   }
   return 'комментариев';
-}
+};
 
 // Функция для создания DOM элемента комментария
-function createCommentElement(comment) {
+const createCommentElement = (comment) => {
   const li = document.createElement('li');
   li.classList.add('social__comment');
 
@@ -39,10 +40,10 @@ function createCommentElement(comment) {
   li.appendChild(p);
 
   return li;
-}
+};
 
 // Функция для отображения комментариев частями
-function renderComments() {
+const renderComments = () => {
   const fragment = document.createDocumentFragment();
   const nextComments = commentsToShow.slice(displayedCommentsCount, displayedCommentsCount + COMMENTS_STEP);
 
@@ -58,15 +59,15 @@ function renderComments() {
   commentCountBlock.textContent = `${displayedCommentsCount} из ${commentsToShow.length} ${endWordComment(commentsToShow.length)}`;
 
   // Скрываем кнопку загрузки, если все комментарии показаны
-  if (displayedCommentsCount >= commentsToShow.length) {
+  if (displayedCommentsCount >= commentsToShow.length || commentsToShow.length < COMMENTS_STEP) {
     commentsLoader.classList.add('hidden');
   } else {
     commentsLoader.classList.remove('hidden');
   }
-}
+};
 
 // Функция открытия полноразмерного изображения
-function openBigPicture(photo) {
+const openBigPicture = (photo) => {
   if (!photo) {
     return;
   }
@@ -88,34 +89,33 @@ function openBigPicture(photo) {
 
   // Показываем блоки счётчика комментариев и кнопки загрузки
   commentCountBlock.classList.remove('hidden');
-  commentsLoader.classList.remove('hidden');
+  // commentsLoader.classList.remove('hidden');
 
   // Открываем окно
   bigPicture.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
   document.addEventListener('keydown', onEscKeyDown);
-}
+};
 
-function onEscKeyDown(evt) {
+// Обработчик для закрытия окна с изображением по Escape
+const onEscKeyDown = (evt) => {
   if (evt.key === 'Escape') {
     closeBigPicture();
   }
-}
+};
 
 // Функция закрытия полноразмерного изображения
-function closeBigPicture() {
+const closeBigPicture = () => {
   bigPicture.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onEscKeyDown); // удаляем его при закрытии
-  // очистка данных
+  document.removeEventListener('keydown', onEscKeyDown);
   commentsToShow = [];
   displayedCommentsCount = 0;
-}
+};
 
 // Событие на кнопку закрытия
 closeButton.addEventListener('click', closeBigPicture);
-
 
 // Событие для загрузки дополнительных комментариев
 commentsLoader.addEventListener('click', renderComments);

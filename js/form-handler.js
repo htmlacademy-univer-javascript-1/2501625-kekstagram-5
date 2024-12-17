@@ -1,14 +1,13 @@
 import { form, pristine, hashtagsInput, descriptionInput } from './validation.js';
+import { unloadData } from './api.js';
 
 const body = document.body;
 const fileInput = document.querySelector('.img-upload__input');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
 const cancelButton = document.querySelector('.img-upload__cancel');
-export const previewImage = document.querySelector('.img-upload__preview img'); // Найдите элемент <img> внутри контейнера предварительного просмотра.
-
+export const previewImage = document.querySelector('.img-upload__preview img');
 const DEFAULT_SCALE = 100;
 
-// Дополнительные элементы
 //const effectsRadioButtons = document.querySelectorAll('.effects__radio');
 const effectLevelSlider = document.querySelector('.effect-level__slider');
 const effectLevelContainer = document.querySelector('.img-upload__effect-level');
@@ -58,13 +57,13 @@ export const openUploadForm = () => {
 
 
 // Обработчик закрытия формы по клавише Escape
-function onDoEscape(evt) {
+const onDoEscape = (evt) => {
   const isFocus = [hashtagsInput, descriptionInput].some((x) => x === evt.target);
   if (evt.key === 'Escape' && !isFocus) {
     evt.preventDefault();
     closeUploadForm();
   }
-}
+};
 
 fileInput.addEventListener('change', () => {
   const file = fileInput.files[0]; // Получаем загруженный файл
@@ -73,8 +72,12 @@ fileInput.addEventListener('change', () => {
 
     reader.addEventListener('load', () => {
       previewImage.src = reader.result; // Устанавливаем содержимое файла в src
-    });
 
+      const effectPreviews = document.querySelectorAll('.effects__preview');
+      effectPreviews.forEach((preview) => {
+        preview.style.backgroundImage = `url(${reader.result})`;
+    });
+  });
     reader.readAsDataURL(file); // Читаем файл как Data URL
   }
   resetEffects();
@@ -89,4 +92,93 @@ noUiSlider.create(effectLevelSlider, {
   connect: 'lower',
 });
 
+// Обработчик отправки формы
+form.addEventListener('submit', async (evt) => {
+  const isValid = pristine.validate(); // Проверка валидности
 
+  if (!isValid) {
+    evt.preventDefault();
+    return;
+  }
+
+  evt.preventDefault();
+
+  const formData = new FormData(form);
+
+  try {
+    const response = await unloadData(
+      (data) => {
+        showSuccessMessage();
+        closeUploadForm();
+      },
+      (error) => {
+
+        showErrorMessage();
+      },
+      'POST',
+      formData
+    );
+  } catch (error) {
+    showErrorMessage();
+  }
+});
+
+// Функция показа сообщения об успешной отправке
+const showSuccessMessage = () => {
+  const successTemplate = document.querySelector('#success').content;
+  const successElement = successTemplate.cloneNode(true);
+  document.body.append(successElement);
+
+  const successButton = document.querySelector('.success__button');
+  const successModal = document.querySelector('.success');
+
+  const removeSuccessMessage = () => {
+    successModal.remove();
+    document.removeEventListener('keydown', onEscKeydown);
+  };
+
+  const onEscKeydown = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      removeSuccessMessage();
+    }
+  };
+
+  document.addEventListener('keydown', onEscKeydown);
+  successModal.addEventListener('click', (evt) => {
+    if (!evt.target.closest('.success__inner')) {
+      removeSuccessMessage();
+    }
+  });
+  successButton.addEventListener('click', removeSuccessMessage);
+};
+
+// Функция показа сообщения об ошибке
+const showErrorMessage = () => {
+  const errorTemplate = document.querySelector('#error').content;
+  const errorElement = errorTemplate.cloneNode(true);
+  document.body.append(errorElement);
+
+  const errorButton = document.querySelector('.error__button');
+  const errorModal = document.querySelector('.error');
+
+  const removeErrorMessage = () => {
+    errorModal.remove();
+    document.removeEventListener('keydown', onEscKeydown);
+  };
+
+  const onEscKeydown = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      removeErrorMessage();
+    }
+  };
+
+  document.addEventListener('keydown', onEscKeydown);
+  errorModal.addEventListener('click', (evt) => {
+    if (!evt.target.closest('.error__inner')) {
+      removeErrorMessage();
+    }
+  });
+  errorButton.addEventListener('click', removeErrorMessage);
+};

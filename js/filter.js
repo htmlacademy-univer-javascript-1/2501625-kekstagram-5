@@ -79,7 +79,7 @@ effectLevelSlider.noUiSlider.on('update', (_, handle, unencoded) => {
   const activeEffect = document.querySelector('.effects__radio:checked').value;
   const effectConfig = EFFECTS[activeEffect];
   const value = unencoded[handle];
-  effectLevelValue.value = value; // Обновляем скрытое поле
+  effectLevelValue.value = value;
   previewImage.style.filter = effectConfig.filter
     ? `${effectConfig.filter}(${value}${effectConfig.unit})`
     : '';

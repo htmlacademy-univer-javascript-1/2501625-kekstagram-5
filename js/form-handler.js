@@ -8,10 +8,12 @@ const cancelButton = document.querySelector('.img-upload__cancel');
 export const previewImage = document.querySelector('.img-upload__preview img');
 const DEFAULT_SCALE = 100;
 
-//const effectsRadioButtons = document.querySelectorAll('.effects__radio');
 const effectLevelSlider = document.querySelector('.effect-level__slider');
 const effectLevelContainer = document.querySelector('.img-upload__effect-level');
 const scaleControlValue = document.querySelector('.scale__control--value');
+
+
+let isFormSubmitted = false;
 
 const setScale = (value) => {
   scaleControlValue.value = `${value}%`;
@@ -20,29 +22,26 @@ const setScale = (value) => {
 
 // Сброс эффектов
 const resetEffects = () => {
-  // Устанавливаем фильтр "Оригинал"
   document.querySelector('#effect-none').checked = true;
   previewImage.style.filter = '';
   effectLevelContainer.classList.add('hidden');
   effectLevelSlider.noUiSlider.set(0); // Сбрасываем слайдер
 
-  // Сбрасываем масштаб
   setScale(DEFAULT_SCALE);
 };
 
 // Обработчик закрытия формы по клавише Escape
 const onDoEscape = (evt, closeFormCallback) => {
   const isFocus = [hashtagsInput, descriptionInput].some((x) => x === evt.target);
-  if (evt.key === 'Escape' && !isFocus) {
+  if (evt.key === 'Escape' && !isFocus && !isFormSubmitted) {
+    console.log('start');
     evt.preventDefault();
     closeFormCallback();
   }
 };
 
-
 // Функция закрытия формы
 export const closeUploadForm = () => {
-
   form.reset();
   pristine.reset();
   resetEffects();
@@ -52,9 +51,7 @@ export const closeUploadForm = () => {
 
   document.removeEventListener('keydown', onDoEscape);
   cancelButton.removeEventListener('click', closeUploadForm);
-
 };
-
 
 // Функция открытия формы
 export const openUploadForm = () => {
@@ -63,9 +60,7 @@ export const openUploadForm = () => {
 
   document.addEventListener('keydown', (evt) => onDoEscape(evt, closeUploadForm));
   cancelButton.addEventListener('click', closeUploadForm);
-
 };
-
 
 fileInput.addEventListener('change', () => {
   const file = fileInput.files[0]; // Получаем загруженный файл
@@ -94,60 +89,79 @@ noUiSlider.create(effectLevelSlider, {
   connect: 'lower',
 });
 
-const removeErrorMessage = () => {
-  const errorModal = document.querySelector('.error');
-  if (errorModal) {
-    errorModal.remove();
-    document.removeEventListener('keydown', onEscKeydown);
-  }
-};
 
-const onEscKeydown = (evt) => {
-  if (evt.key === 'Escape') {
-    evt.preventDefault();
-    removeErrorMessage();
-  }
-};
 
-// Функция показа сообщения об успешной отправке
+
+
 const showSuccessMessage = () => {
   const successTemplate = document.querySelector('#success').content;
-  const successElement = successTemplate.cloneNode(true);
-  document.body.append(successElement);
+  const successElement = successTemplate.cloneNode(true); // Клонируем содержимое шаблона
+  document.body.append(successElement); // Вставляем сообщение в тело документа
 
-  const successButton = document.querySelector('.success__button');
-  const successModal = document.querySelector('.success');
+  const successButton = document.querySelector('.success__button'); // Кнопка закрытия
+  const successModal = document.querySelector('.success'); // Само модальное окно
 
   const removeSuccessMessage = () => {
-    successModal.remove();
-    document.removeEventListener('keydown', onEscKeydown);
+    successModal.remove(); // Удаляем сообщение
+    document.removeEventListener('keydown', onEscKeydown); // Удаляем обработчик клавиши Escape
   };
 
-  document.addEventListener('keydown', onEscKeydown);
+  const onEscKeydown = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      removeSuccessMessage();
+    }
+  };
+
+  // Обработчик клика вне сообщения
   successModal.addEventListener('click', (evt) => {
-    if (!evt.target.closest('.success__inner')) {
+    if (!evt.target.closest('.success__inner')) { // Если клик не внутри сообщения
       removeSuccessMessage();
     }
   });
+
+  // Обработчик клика на кнопку
   successButton.addEventListener('click', removeSuccessMessage);
+
+  // Обработчик нажатия Escape
+  document.addEventListener('keydown', onEscKeydown);
 };
 
-// Функция показа сообщения об ошибке
+
 const showErrorMessage = () => {
   const errorTemplate = document.querySelector('#error').content;
-  const errorElement = errorTemplate.cloneNode(true);
-  document.body.append(errorElement);
+  const errorElement = errorTemplate.cloneNode(true); // Клонируем содержимое шаблона
+  document.body.append(errorElement); // Вставляем сообщение в тело документа
 
-  const errorButton = document.querySelector('.error__button');
-  const errorModal = document.querySelector('.error');
+  const errorButton = document.querySelector('.error__button'); // Кнопка закрытия
+  const errorModal = document.querySelector('.error'); // Само модальное окно
 
-  document.addEventListener('keydown', onEscKeydown);
+  const removeErrorMessage = () => {
+    errorModal.remove(); // Удаляем сообщение
+    document.removeEventListener('keydown', onEscKeydown); // Удаляем обработчик клавиши Escape
+    isFormSubmitted = false; // Снимаем флаг отправки формы
+    document.addEventListener('keydown', (evt) => onDoEscape(evt, closeUploadForm)); // Возвращаем обработчик Escape для формы
+  };
+
+  const onEscKeydown = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      removeErrorMessage();
+    }
+  };
+
+  // Обработчик клика вне сообщения
   errorModal.addEventListener('click', (evt) => {
-    if (!evt.target.closest('.error__inner')) {
+    if (!evt.target.closest('.error__inner')) { // Если клик не внутри сообщения
       removeErrorMessage();
     }
   });
+
+  // Обработчик клика на кнопку
   errorButton.addEventListener('click', removeErrorMessage);
+
+  // Обработчик нажатия Escape
+  document.addEventListener('keydown', onEscKeydown);
 };
 
 
@@ -163,6 +177,10 @@ form.addEventListener('submit', async (evt) => {
   evt.preventDefault();
 
   const formData = new FormData(form);
+  const submitButton = form.querySelector('[type="submit"]');
+  submitButton.disabled = true;
+  isFormSubmitted = true;
+  document.removeEventListener('keydown', onDoEscape);
 
   try {
     await unloadData(
@@ -171,7 +189,6 @@ form.addEventListener('submit', async (evt) => {
         closeUploadForm();
       },
       () => {
-
         showErrorMessage();
       },
       'POST',
@@ -180,5 +197,8 @@ form.addEventListener('submit', async (evt) => {
   } catch (error) {
     showErrorMessage();
   }
+  finally {
+  // Разблокируем кнопку после завершения запроса
+  submitButton.disabled = false;
+  }
 });
-

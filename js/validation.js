@@ -22,7 +22,7 @@ const validateHashtagsParts = (value) => {
   if (value.trim() === '') {
     return { isCorrectCount: true, isUniqueHash: true, isTrueHash: true };
   }
-  const hashtags = value.split(' ').map(hashtag => hashtag.toLowerCase());;
+  const hashtags = value.split(' ').map((hashtag) => hashtag.toLowerCase());
   const isCorrectCount = hashtags.length <= MAX_HASH_COUNT;
   const isUniqueHash = new Set(hashtags).size === hashtags.length;
   let isTrueHash = true;

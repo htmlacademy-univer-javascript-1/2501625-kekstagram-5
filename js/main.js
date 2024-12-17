@@ -1,7 +1,7 @@
 import {drawMiniature} from './draw_miniature.js';
 import './form-handler.js';
 import './filter.js';
-import {loadData} from './api.js'
+import {loadData} from './api.js';
 
 // drawMiniature();
 
@@ -10,8 +10,8 @@ let photos = [];
 const onSuccess = (data) => {
   photos = data.slice();
 
-  drawMiniature(data.slice());
-}
+  drawMiniature(photos);
+};
 
 const onFail = () => {
   const messageAlert = document.createElement('div');
@@ -33,6 +33,6 @@ const onFail = () => {
   // Добавляем сообщение в DOM
   document.body.appendChild(messageAlert);
 
-}
+};
 
 loadData(onSuccess, onFail);

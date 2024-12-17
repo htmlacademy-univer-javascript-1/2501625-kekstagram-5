@@ -12,16 +12,15 @@ const COMMENTS_STEP = 5; // шаг показа комментариев
 let commentsToShow = []; // хранение комментариев фотографии
 let displayedCommentsCount = 0; // количество отображённых комментариев
 
-// Функция для склонения слова "комментарий"
-const endWordComment = (number) => {
-  if (number % 10 === 1 && number % 100 !== 11) {
+function endWordComment(number){
+  if (number % 10 === 1 && number % 100 !== 11){
     return 'комментария';
   }
   return 'комментариев';
-};
+}
 
 // Функция для создания DOM элемента комментария
-const createCommentElement = (comment) => {
+function createCommentElement(comment) {
   const li = document.createElement('li');
   li.classList.add('social__comment');
 
@@ -40,10 +39,10 @@ const createCommentElement = (comment) => {
   li.appendChild(p);
 
   return li;
-};
+}
 
 // Функция для отображения комментариев частями
-const renderComments = () => {
+function renderComments() {
   const fragment = document.createDocumentFragment();
   const nextComments = commentsToShow.slice(displayedCommentsCount, displayedCommentsCount + COMMENTS_STEP);
 
@@ -55,19 +54,35 @@ const renderComments = () => {
   socialCommentsList.appendChild(fragment);
   displayedCommentsCount += nextComments.length;
 
+
   // Обновляем отображение счётчика комментариев
   commentCountBlock.textContent = `${displayedCommentsCount} из ${commentsToShow.length} ${endWordComment(commentsToShow.length)}`;
-
   // Скрываем кнопку загрузки, если все комментарии показаны
   if (displayedCommentsCount >= commentsToShow.length || commentsToShow.length < COMMENTS_STEP) {
     commentsLoader.classList.add('hidden');
   } else {
     commentsLoader.classList.remove('hidden');
   }
-};
+}
+
+// Функция закрытия полноразмерного изображения
+function closeBigPicture() {
+  bigPicture.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onEscKeyDown);
+  commentsToShow = [];
+  displayedCommentsCount = 0;
+}
+
+function onEscKeyDown(evt) {
+  if (evt.key === 'Escape') {
+    closeBigPicture();
+  }
+}
+
 
 // Функция открытия полноразмерного изображения
-const openBigPicture = (photo) => {
+function openBigPicture(photo) {
   if (!photo) {
     return;
   }
@@ -84,8 +99,11 @@ const openBigPicture = (photo) => {
   commentsToShow = photo.comments;
   displayedCommentsCount = 0;
 
+
   // Показываем первые комментарии
   renderComments();
+
+
 
   // Показываем блоки счётчика комментариев и кнопки загрузки
   commentCountBlock.classList.remove('hidden');
@@ -96,26 +114,12 @@ const openBigPicture = (photo) => {
   document.body.classList.add('modal-open');
 
   document.addEventListener('keydown', onEscKeyDown);
-};
+}
 
-// Обработчик для закрытия окна с изображением по Escape
-const onEscKeyDown = (evt) => {
-  if (evt.key === 'Escape') {
-    closeBigPicture();
-  }
-};
-
-// Функция закрытия полноразмерного изображения
-const closeBigPicture = () => {
-  bigPicture.classList.add('hidden');
-  document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onEscKeyDown);
-  commentsToShow = [];
-  displayedCommentsCount = 0;
-};
 
 // Событие на кнопку закрытия
 closeButton.addEventListener('click', closeBigPicture);
+
 
 // Событие для загрузки дополнительных комментариев
 commentsLoader.addEventListener('click', renderComments);

@@ -21,8 +21,8 @@ const sendRequest = (onSuccess, onError, method, body) => {
     });
 };
 
-const loadData = (onSuccess, onError, method = 'GET') => sendRequest(onSuccess, onError, method)
+const loadData = (onSuccess, onError, method = 'GET') => sendRequest(onSuccess, onError, method);
 
-const unloadData = (onSuccess, onError, method = 'POST', body) => sendRequest(onSuccess, onError, method, body)
+const unloadData = (onSuccess, onError, method = 'POST', body) => sendRequest(onSuccess, onError, method, body);
 
-export{loadData, unloadData}
+export{loadData, unloadData};

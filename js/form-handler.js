@@ -35,7 +35,7 @@ const onDoEscape = (evt, closeFormCallback) => {
   const isFocus = [hashtagsInput, descriptionInput].some((x) => x === evt.target);
   if (evt.key === 'Escape' && !isFocus) {
     evt.preventDefault();
-    closeFormCallback();  // Вызов функции закрытия формы через параметр
+    closeFormCallback();
   }
 };
 
@@ -94,6 +94,14 @@ noUiSlider.create(effectLevelSlider, {
   connect: 'lower',
 });
 
+const removeErrorMessage = () => {
+  const errorModal = document.querySelector('.error');
+  if (errorModal) {
+    errorModal.remove();
+    document.removeEventListener('keydown', onEscKeydown);
+  }
+};
+
 const onEscKeydown = (evt) => {
   if (evt.key === 'Escape') {
     evt.preventDefault();
@@ -132,12 +140,6 @@ const showErrorMessage = () => {
 
   const errorButton = document.querySelector('.error__button');
   const errorModal = document.querySelector('.error');
-
-  const removeErrorMessage = () => {
-    errorModal.remove();
-    document.removeEventListener('keydown', onEscKeydown);
-  };
-
 
   document.addEventListener('keydown', onEscKeydown);
   errorModal.addEventListener('click', (evt) => {

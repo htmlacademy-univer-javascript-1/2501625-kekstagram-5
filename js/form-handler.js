@@ -98,36 +98,36 @@ const onEscKeydown = (evt, removeCallback) => {
 
 const showSuccessMessage = () => {
   const successTemplate = document.querySelector('#success').content;
-  const successElement = successTemplate.cloneNode(true); // Клонируем содержимое шаблона
-  document.body.append(successElement); // Вставляем сообщение в тело документа
+  const successElement = successTemplate.cloneNode(true);
+  document.body.append(successElement);
 
-  const successButton = document.querySelector('.success__button'); // Кнопка закрытия
-  const successModal = document.querySelector('.success'); // Само модальное окно
+  const successButton = document.querySelector('.success__button');
+  const successModal = document.querySelector('.success');
 
   const removeSuccessMessage = () => {
-    successModal.remove(); // Удаляем сообщение
-    document.removeEventListener('keydown', (evt) => onEscKeydown(evt, removeErrorMessage)); // Удаляем обработчик клавиши Escape
+    successModal.remove();
+    document.removeEventListener('keydown', );
   };
 
   // Обработчики событий
   successModal.addEventListener('click', (evt) => {
-    if (!evt.target.closest('.success__inner')) { // Если клик не внутри сообщения
+    if (!evt.target.closest('.success__inner')) {
       removeSuccessMessage();
     }
   });
 
   successButton.addEventListener('click', removeSuccessMessage);
-  document.addEventListener('keydown', keydownHandler);
+  document.addEventListener('keydown', (evt) => onEscKeydown(evt, removeSuccessMessage));
 };
 
 
 const showErrorMessage = () => {
   const errorTemplate = document.querySelector('#error').content;
-  const errorElement = errorTemplate.cloneNode(true); // Клонируем содержимое шаблона
-  document.body.append(errorElement); // Вставляем сообщение в тело документа
+  const errorElement = errorTemplate.cloneNode(true);
+  document.body.append(errorElement);
 
-  const errorButton = document.querySelector('.error__button'); // Кнопка закрытия
-  const errorModal = document.querySelector('.error'); // Само модальное окно
+  const errorButton = document.querySelector('.error__button');
+  const errorModal = document.querySelector('.error');
 
   const removeErrorMessage = () => {
     errorModal.remove(); // Удаляем сообщение
@@ -136,18 +136,15 @@ const showErrorMessage = () => {
     document.addEventListener('keydown', (evt) => onDoEscape(evt, closeUploadForm)); // Возвращаем обработчик Escape для формы
   };
 
-  // Обработчик клика вне сообщения
   errorModal.addEventListener('click', (evt) => {
     if (!evt.target.closest('.error__inner')) { // Если клик не внутри сообщения
       removeErrorMessage();
     }
   });
 
-  // Обработчик клика на кнопку
   errorButton.addEventListener('click', removeErrorMessage);
 
-  // Обработчик нажатия Escape
-  document.addEventListener('keydown', keydownHandler);
+  document.addEventListener('keydown', (evt) => onEscKeydown(evt, removeErrorMessage));
 };
 
 

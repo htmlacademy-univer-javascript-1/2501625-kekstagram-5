@@ -34,7 +34,6 @@ const resetEffects = () => {
 const onDoEscape = (evt, closeFormCallback) => {
   const isFocus = [hashtagsInput, descriptionInput].some((x) => x === evt.target);
   if (evt.key === 'Escape' && !isFocus && !isFormSubmitted) {
-    console.log('start');
     evt.preventDefault();
     closeFormCallback();
   }
@@ -90,8 +89,12 @@ noUiSlider.create(effectLevelSlider, {
 });
 
 
-
-
+const onEscKeydown = (evt, removeCallback) => {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    removeCallback();
+  }
+};
 
 const showSuccessMessage = () => {
   const successTemplate = document.querySelector('#success').content;
@@ -103,29 +106,22 @@ const showSuccessMessage = () => {
 
   const removeSuccessMessage = () => {
     successModal.remove(); // Удаляем сообщение
-    document.removeEventListener('keydown', onEscKeydown); // Удаляем обработчик клавиши Escape
+    document.removeEventListener('keydown', keydownHandler); // Удаляем обработчик клавиши Escape
   };
 
-  const onEscKeydown = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      removeSuccessMessage();
-    }
-  };
+  const keydownHandler = (evt) => onEscKeydown(evt, removeSuccessMessage);
 
-  // Обработчик клика вне сообщения
+  // Обработчики событий
   successModal.addEventListener('click', (evt) => {
     if (!evt.target.closest('.success__inner')) { // Если клик не внутри сообщения
       removeSuccessMessage();
     }
   });
 
-  // Обработчик клика на кнопку
   successButton.addEventListener('click', removeSuccessMessage);
-
-  // Обработчик нажатия Escape
-  document.addEventListener('keydown', onEscKeydown);
+  document.addEventListener('keydown', keydownHandler);
 };
+
 
 
 const showErrorMessage = () => {
@@ -138,17 +134,14 @@ const showErrorMessage = () => {
 
   const removeErrorMessage = () => {
     errorModal.remove(); // Удаляем сообщение
-    document.removeEventListener('keydown', onEscKeydown); // Удаляем обработчик клавиши Escape
+    document.removeEventListener('keydown', keydownHandler); // Удаляем обработчик клавиши Escape
     isFormSubmitted = false; // Снимаем флаг отправки формы
     document.addEventListener('keydown', (evt) => onDoEscape(evt, closeUploadForm)); // Возвращаем обработчик Escape для формы
   };
 
-  const onEscKeydown = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      removeErrorMessage();
-    }
-  };
+  const keydownHandler = (evt) => onEscKeydown(evt, removeErrorMessage);
+
+
 
   // Обработчик клика вне сообщения
   errorModal.addEventListener('click', (evt) => {
@@ -161,7 +154,7 @@ const showErrorMessage = () => {
   errorButton.addEventListener('click', removeErrorMessage);
 
   // Обработчик нажатия Escape
-  document.addEventListener('keydown', onEscKeydown);
+  document.addEventListener('keydown', keydownHandler);
 };
 
 
@@ -196,9 +189,8 @@ form.addEventListener('submit', async (evt) => {
     );
   } catch (error) {
     showErrorMessage();
-  }
-  finally {
+  } finally {
   // Разблокируем кнопку после завершения запроса
-  submitButton.disabled = false;
+    submitButton.disabled = false;
   }
 });

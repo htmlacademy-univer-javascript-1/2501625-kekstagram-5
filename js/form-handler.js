@@ -106,10 +106,8 @@ const showSuccessMessage = () => {
 
   const removeSuccessMessage = () => {
     successModal.remove(); // Удаляем сообщение
-    document.removeEventListener('keydown', keydownHandler); // Удаляем обработчик клавиши Escape
+    document.removeEventListener('keydown', (evt) => onEscKeydown(evt, removeErrorMessage)); // Удаляем обработчик клавиши Escape
   };
-
-  const keydownHandler = (evt) => onEscKeydown(evt, removeSuccessMessage);
 
   // Обработчики событий
   successModal.addEventListener('click', (evt) => {
@@ -123,7 +121,6 @@ const showSuccessMessage = () => {
 };
 
 
-
 const showErrorMessage = () => {
   const errorTemplate = document.querySelector('#error').content;
   const errorElement = errorTemplate.cloneNode(true); // Клонируем содержимое шаблона
@@ -134,14 +131,10 @@ const showErrorMessage = () => {
 
   const removeErrorMessage = () => {
     errorModal.remove(); // Удаляем сообщение
-    document.removeEventListener('keydown', keydownHandler); // Удаляем обработчик клавиши Escape
+    document.removeEventListener('keydown', (evt) => onEscKeydown(evt, removeErrorMessage)); // Удаляем обработчик клавиши Escape
     isFormSubmitted = false; // Снимаем флаг отправки формы
     document.addEventListener('keydown', (evt) => onDoEscape(evt, closeUploadForm)); // Возвращаем обработчик Escape для формы
   };
-
-  const keydownHandler = (evt) => onEscKeydown(evt, removeErrorMessage);
-
-
 
   // Обработчик клика вне сообщения
   errorModal.addEventListener('click', (evt) => {

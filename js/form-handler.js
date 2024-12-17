@@ -106,10 +106,10 @@ const showSuccessMessage = () => {
 
   const removeSuccessMessage = () => {
     successModal.remove();
-    document.removeEventListener('keydown', );
+    document.removeEventListener('keydown', (evt) => onEscKeydown(evt, removeSuccessMessage));
   };
 
-  // Обработчики событий
+
   successModal.addEventListener('click', (evt) => {
     if (!evt.target.closest('.success__inner')) {
       removeSuccessMessage();
@@ -130,14 +130,14 @@ const showErrorMessage = () => {
   const errorModal = document.querySelector('.error');
 
   const removeErrorMessage = () => {
-    errorModal.remove(); // Удаляем сообщение
-    document.removeEventListener('keydown', (evt) => onEscKeydown(evt, removeErrorMessage)); // Удаляем обработчик клавиши Escape
-    isFormSubmitted = false; // Снимаем флаг отправки формы
-    document.addEventListener('keydown', (evt) => onDoEscape(evt, closeUploadForm)); // Возвращаем обработчик Escape для формы
+    errorModal.remove();
+    document.removeEventListener('keydown', (evt) => onEscKeydown(evt, removeErrorMessage));
+    isFormSubmitted = false;
+    document.addEventListener('keydown', (evt) => onDoEscape(evt, closeUploadForm));
   };
 
   errorModal.addEventListener('click', (evt) => {
-    if (!evt.target.closest('.error__inner')) { // Если клик не внутри сообщения
+    if (!evt.target.closest('.error__inner')) {
       removeErrorMessage();
     }
   });

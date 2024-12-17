@@ -31,13 +31,14 @@ const resetEffects = () => {
 };
 
 // Обработчик закрытия формы по клавише Escape
-const onDoEscape = (evt) => {
+const onDoEscape = (evt, closeFormCallback) => {
   const isFocus = [hashtagsInput, descriptionInput].some((x) => x === evt.target);
   if (evt.key === 'Escape' && !isFocus) {
     evt.preventDefault();
-    closeUploadForm();
+    closeFormCallback();  // Вызов функции закрытия формы через параметр
   }
 };
+
 
 // Функция закрытия формы
 export const closeUploadForm = () => {
@@ -60,11 +61,10 @@ export const openUploadForm = () => {
   uploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
 
-  document.addEventListener('keydown', onDoEscape);
+  document.addEventListener('keydown', (evt) => onDoEscape(evt, closeUploadForm));
   cancelButton.addEventListener('click', closeUploadForm);
 
 };
-
 
 
 fileInput.addEventListener('change', () => {
@@ -139,7 +139,6 @@ const showErrorMessage = () => {
   };
 
 
-
   document.addEventListener('keydown', onEscKeydown);
   errorModal.addEventListener('click', (evt) => {
     if (!evt.target.closest('.error__inner')) {
@@ -164,12 +163,12 @@ form.addEventListener('submit', async (evt) => {
   const formData = new FormData(form);
 
   try {
-    const response = await unloadData(
-      (data) => {
+    await unloadData(
+      () => {
         showSuccessMessage();
         closeUploadForm();
       },
-      (error) => {
+      () => {
 
         showErrorMessage();
       },

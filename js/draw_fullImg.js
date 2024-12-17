@@ -104,7 +104,6 @@ function openBigPicture(photo) {
   renderComments();
 
 
-
   // Показываем блоки счётчика комментариев и кнопки загрузки
   commentCountBlock.classList.remove('hidden');
   // commentsLoader.classList.remove('hidden');

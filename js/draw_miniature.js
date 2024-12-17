@@ -1,4 +1,3 @@
-import { createPhotoArray } from './data.js';
 import { openBigPicture } from './draw_fullImg.js';
 
 const picturesContainer = document.querySelector('.pictures');
@@ -30,7 +29,7 @@ const createMiniPicture = (photo) => {
 
 // Отрисовка всех миниатюр
 const drawMiniature = (data) => {
-  const photos = Array.isArray(data) ? data : [];  // Проверка на корректность данных
+  const photos = Array.isArray(data) ? data : [];
 
   photos.forEach((photo) => {
     const pictureElement = createMiniPicture(photo);

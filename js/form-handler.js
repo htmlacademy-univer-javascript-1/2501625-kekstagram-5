@@ -11,9 +11,8 @@ const DEFAULT_SCALE = 100;
 const effectLevelSlider = document.querySelector('.effect-level__slider');
 const effectLevelContainer = document.querySelector('.img-upload__effect-level');
 const scaleControlValue = document.querySelector('.scale__control--value');
-
-
-let isFormSubmitted = false;
+const isEscapeKey = (evt) => evt.key === 'Escape';
+const checkTypeMessage = () => document.querySelector('.success, .error');
 
 const setScale = (value) => {
   scaleControlValue.value = `${value}%`;
@@ -30,57 +29,97 @@ const resetEffects = () => {
   setScale(DEFAULT_SCALE);
 };
 
-// Обработчик закрытия формы по клавише Escape
-const onDoEscape = (evt, closeFormCallback) => {
-  const isFocus = [hashtagsInput, descriptionInput].some((x) => x === evt.target);
-  if (evt.key === 'Escape' && !isFocus && !isFormSubmitted) {
+// Обработчик клавиши Escape для сообщения
+const onMessageEscKeydown = (evt) => {
+  if (isEscapeKey(evt) && checkTypeMessage) {
     evt.preventDefault();
-    closeFormCallback();
+    closeMessageBox();
   }
 };
 
-// Функция закрытия формы
-export const closeUploadForm = () => {
+// Обработчик клика по фону сообщения
+const onMessageOutsideClick = (evt) => {
+  const messageElement = checkTypeMessage();
+  if (evt.target === messageElement) {
+    closeMessageBox();
+  }
+};
+
+// Закрытие сообщения
+function closeMessageBox() {
+  document.removeEventListener('keydown', onMessageEscKeydown);
+  document.removeEventListener('click', onMessageOutsideClick);
+  const messageElement = checkTypeMessage();
+  if (messageElement) {
+    messageElement.remove();
+  }
+}
+
+const openMessageBox = (typeMessage) => {
+  const message = typeMessage === 'success' ? successMessageTemplateElement.cloneNode(true) : errorMessageTemplateElement.cloneNode(true);
+  const messageButton = message.querySelector(`.${typeMessage}__button`);
+
+  document.body.append(message);
+
+  messageButton.addEventListener('click', () => {
+    closeMessageBox();
+  });
+
+  document.addEventListener('keydown', onMessageEscKeydown);
+  document.addEventListener('click', onMessageOutsideClick);
+};
+
+
+// Переработка обработчиков для формы
+const onDocumentKeydown = (evt) => {
+  const isFocus = [hashtagsInput, descriptionInput].some((x) => x === evt.target);
+  if (isEscapeKey(evt) && !checkTypeMessage() && !isFocus) {
+    evt.preventDefault();
+    closeUploadForm();
+  }
+};
+
+
+
+const closeUploadForm = () => {
   form.reset();
   pristine.reset();
   resetEffects();
 
   uploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
-
-  document.removeEventListener('keydown', onDoEscape);
+  document.removeEventListener('keydown', onDocumentKeydown);
   cancelButton.removeEventListener('click', closeUploadForm);
 };
 
-// Функция открытия формы
-export const openUploadForm = () => {
+const openUploadForm = () => {
   uploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
 
-  document.addEventListener('keydown', (evt) => onDoEscape(evt, closeUploadForm));
+  document.addEventListener('keydown', onDocumentKeydown);
   cancelButton.addEventListener('click', closeUploadForm);
 };
 
 fileInput.addEventListener('change', () => {
-  const file = fileInput.files[0]; // Получаем загруженный файл
+  const file = fileInput.files[0];
   if (file) {
-    const reader = new FileReader(); // Создаем объект FileReader для чтения файла
+    const reader = new FileReader();
 
     reader.addEventListener('load', () => {
-      previewImage.src = reader.result; // Устанавливаем содержимое файла в src
+      previewImage.src = reader.result;
 
       const effectPreviews = document.querySelectorAll('.effects__preview');
       effectPreviews.forEach((preview) => {
         preview.style.backgroundImage = `url(${reader.result})`;
       });
     });
-    reader.readAsDataURL(file); // Читаем файл как Data URL
+    reader.readAsDataURL(file);
   }
   resetEffects();
   openUploadForm();
 });
 
-// Инициализация слайдера
+
 noUiSlider.create(effectLevelSlider, {
   range: { min: 0, max: 1 },
   start: 0,
@@ -106,9 +145,8 @@ const showSuccessMessage = () => {
 
   const removeSuccessMessage = () => {
     successModal.remove();
-    document.removeEventListener('keydown', (evt) => onEscKeydown(evt, removeSuccessMessage));
+    document.removeEventListener('keydown', onMessageEscKeydown);
   };
-
 
   successModal.addEventListener('click', (evt) => {
     if (!evt.target.closest('.success__inner')) {
@@ -117,9 +155,8 @@ const showSuccessMessage = () => {
   });
 
   successButton.addEventListener('click', removeSuccessMessage);
-  document.addEventListener('keydown', (evt) => onEscKeydown(evt, removeSuccessMessage));
+  document.addEventListener('keydown', onMessageEscKeydown);
 };
-
 
 const showErrorMessage = () => {
   const errorTemplate = document.querySelector('#error').content;
@@ -131,9 +168,7 @@ const showErrorMessage = () => {
 
   const removeErrorMessage = () => {
     errorModal.remove();
-    document.removeEventListener('keydown', (evt) => onEscKeydown(evt, removeErrorMessage));
-    isFormSubmitted = false;
-    document.addEventListener('keydown', (evt) => onDoEscape(evt, closeUploadForm));
+    document.removeEventListener('keydown', onMessageEscKeydown);
   };
 
   errorModal.addEventListener('click', (evt) => {
@@ -143,8 +178,7 @@ const showErrorMessage = () => {
   });
 
   errorButton.addEventListener('click', removeErrorMessage);
-
-  document.addEventListener('keydown', (evt) => onEscKeydown(evt, removeErrorMessage));
+  document.addEventListener('keydown', onMessageEscKeydown);
 };
 
 
@@ -162,8 +196,7 @@ form.addEventListener('submit', async (evt) => {
   const formData = new FormData(form);
   const submitButton = form.querySelector('[type="submit"]');
   submitButton.disabled = true;
-  isFormSubmitted = true;
-  document.removeEventListener('keydown', onDoEscape);
+
 
   try {
     await unloadData(
@@ -180,7 +213,7 @@ form.addEventListener('submit', async (evt) => {
   } catch (error) {
     showErrorMessage();
   } finally {
-  // Разблокируем кнопку после завершения запроса
+
     submitButton.disabled = false;
   }
 });

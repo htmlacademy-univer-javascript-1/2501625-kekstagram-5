@@ -15,16 +15,14 @@ export const pristine = new Pristine(form, {
 
 
 // Валидация описания
-const validateDescription = (value) => {
-  if (!value) {
-    return true;
-  }
-  return value.length <= MAX_COMMENT_LENGTH;
-};
+const validateDescription = (value) => !value || value.length <= MAX_COMMENT_LENGTH;
 
 // Валидация хэш-тегов
 const validateHashtagsParts = (value) => {
-  const hashtags = value.split(' ');
+  if (value.trim() === '') {
+    return { isCorrectCount: true, isUniqueHash: true, isTrueHash: true };
+  }
+  const hashtags = value.split(' ').map((hashtag) => hashtag.toLowerCase());
   const isCorrectCount = hashtags.length <= MAX_HASH_COUNT;
   const isUniqueHash = new Set(hashtags).size === hashtags.length;
   let isTrueHash = true;
@@ -60,13 +58,4 @@ const getHashMessage = (value) => {
 // Добавляем кастомные валидаторы
 pristine.addValidator(hashtagsInput, validateHashtags, getHashMessage);
 pristine.addValidator(descriptionInput, validateDescription, 'Комментарий не может быть длиннее 140 символов');
-
-// Проверка формы на отправку
-
-form.addEventListener('submit', (evt) => {
-  const isValid = pristine.validate();
-  if (!isValid) {
-    evt.preventDefault();
-  }
-});
 

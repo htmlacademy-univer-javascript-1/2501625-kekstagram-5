@@ -54,16 +54,32 @@ function renderComments() {
   socialCommentsList.appendChild(fragment);
   displayedCommentsCount += nextComments.length;
 
+
   // Обновляем отображение счётчика комментариев
   commentCountBlock.textContent = `${displayedCommentsCount} из ${commentsToShow.length} ${endWordComment(commentsToShow.length)}`;
-
   // Скрываем кнопку загрузки, если все комментарии показаны
-  if (displayedCommentsCount >= commentsToShow.length) {
+  if (displayedCommentsCount >= commentsToShow.length || commentsToShow.length < COMMENTS_STEP) {
     commentsLoader.classList.add('hidden');
   } else {
     commentsLoader.classList.remove('hidden');
   }
 }
+
+// Функция закрытия полноразмерного изображения
+function closeBigPicture() {
+  bigPicture.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onEscKeyDown);
+  commentsToShow = [];
+  displayedCommentsCount = 0;
+}
+
+function onEscKeyDown(evt) {
+  if (evt.key === 'Escape') {
+    closeBigPicture();
+  }
+}
+
 
 // Функция открытия полноразмерного изображения
 function openBigPicture(photo) {
@@ -83,12 +99,14 @@ function openBigPicture(photo) {
   commentsToShow = photo.comments;
   displayedCommentsCount = 0;
 
+
   // Показываем первые комментарии
   renderComments();
 
+
   // Показываем блоки счётчика комментариев и кнопки загрузки
   commentCountBlock.classList.remove('hidden');
-  commentsLoader.classList.remove('hidden');
+  // commentsLoader.classList.remove('hidden');
 
   // Открываем окно
   bigPicture.classList.remove('hidden');
@@ -97,21 +115,6 @@ function openBigPicture(photo) {
   document.addEventListener('keydown', onEscKeyDown);
 }
 
-function onEscKeyDown(evt) {
-  if (evt.key === 'Escape') {
-    closeBigPicture();
-  }
-}
-
-// Функция закрытия полноразмерного изображения
-function closeBigPicture() {
-  bigPicture.classList.add('hidden');
-  document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onEscKeyDown); // удаляем его при закрытии
-  // очистка данных
-  commentsToShow = [];
-  displayedCommentsCount = 0;
-}
 
 // Событие на кнопку закрытия
 closeButton.addEventListener('click', closeBigPicture);

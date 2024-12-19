@@ -127,12 +127,12 @@ noUiSlider.create(effectLevelSlider, {
 });
 
 
-const onEscKeydown = (evt, removeCallback) => {
-  if (evt.key === 'Escape') {
-    evt.preventDefault();
-    removeCallback();
-  }
-};
+// const onEscKeydown = (evt, removeCallback) => {
+//   if (evt.key === 'Escape') {
+//     evt.preventDefault();
+//     removeCallback();
+//   }
+// };
 
 const showSuccessMessage = () => {
   const successTemplate = document.querySelector('#success').content;

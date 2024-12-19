@@ -55,30 +55,29 @@ function closeMessageBox() {
   }
 }
 
-const openMessageBox = (typeMessage) => {
-  const message = typeMessage === 'success' ? successMessageTemplateElement.cloneNode(true) : errorMessageTemplateElement.cloneNode(true);
-  const messageButton = message.querySelector(`.${typeMessage}__button`);
+// const openMessageBox = (typeMessage) => {
+//   const message = typeMessage === 'success' ? successMessageTemplateElement.cloneNode(true) : errorMessageTemplateElement.cloneNode(true);
+//   const messageButton = message.querySelector(`.${typeMessage}__button`);
 
-  document.body.append(message);
+//   document.body.append(message);
 
-  messageButton.addEventListener('click', () => {
-    closeMessageBox();
-  });
+//   messageButton.addEventListener('click', () => {
+//     closeMessageBox();
+//   });
 
-  document.addEventListener('keydown', onMessageEscKeydown);
-  document.addEventListener('click', onMessageOutsideClick);
-};
+//   document.addEventListener('keydown', onMessageEscKeydown);
+//   document.addEventListener('click', onMessageOutsideClick);
+// };
 
 
 // Переработка обработчиков для формы
-const onDocumentKeydown = (evt) => {
+const onDocumentKeydown = (evt, closeFormCallback) => {
   const isFocus = [hashtagsInput, descriptionInput].some((x) => x === evt.target);
   if (isEscapeKey(evt) && !checkTypeMessage() && !isFocus) {
     evt.preventDefault();
-    closeUploadForm();
+    closeFormCallback();
   }
 };
-
 
 
 const closeUploadForm = () => {

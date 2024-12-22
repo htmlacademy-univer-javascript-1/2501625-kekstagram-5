@@ -3,8 +3,8 @@ import { openBigPicture } from './draw_fullImg.js';
 const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const fragment = document.createDocumentFragment();
+const imgFiltersSection = document.querySelector('.img-filters');
 
-// Создание миниатюры фотографии
 const createMiniPicture = (photo) => {
   const picture = pictureTemplate.cloneNode(true);
 
@@ -12,13 +12,11 @@ const createMiniPicture = (photo) => {
   const likes = picture.querySelector('.picture__likes');
   const comments = picture.querySelector('.picture__comments');
 
-  // Проверка на наличие данных
   img.src = photo.url;
   img.alt = photo.description;
   likes.textContent = photo.likes ;
   comments.textContent = photo.comments.length;
 
-  // Открытие большого изображения при клике
   picture.addEventListener('click', (event) => {
     event.preventDefault();
     openBigPicture(photo);
@@ -27,7 +25,6 @@ const createMiniPicture = (photo) => {
   return picture;
 };
 
-// Отрисовка всех миниатюр
 const drawMiniature = (data) => {
   const photos = Array.isArray(data) ? data : [];
 
@@ -37,6 +34,14 @@ const drawMiniature = (data) => {
   });
 
   picturesContainer.appendChild(fragment);
+  imgFiltersSection.classList.remove('img-filters--inactive');
 };
 
-export { drawMiniature };
+const photos1 = picturesContainer.getElementsByClassName('picture');
+const removePictures = () => {
+  if (photos1) {
+    [...photos1].forEach((photo) => photo.remove());
+  }
+};
+
+export { drawMiniature, removePictures};

@@ -2,8 +2,7 @@ import {drawMiniature} from './draw_miniature.js';
 import './form-handler.js';
 import './filter.js';
 import {loadData} from './api.js';
-
-// drawMiniature();
+import './filter-photos.js';
 
 let photos = [];
 
@@ -30,9 +29,10 @@ const onFail = () => {
   messageAlert.style.zIndex = '1000';
   messageAlert.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.8)';
 
-  // Добавляем сообщение в DOM
   document.body.appendChild(messageAlert);
 
 };
 
 loadData(onSuccess, onFail);
+
+export{photos};

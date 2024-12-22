@@ -8,13 +8,11 @@ const effectLevelValue = document.querySelector('.effect-level__value');
 const effectsRadioButtons = document.querySelectorAll('.effects__radio');
 const effectLevelContainer = document.querySelector('.img-upload__effect-level');
 
-// Константы для масштаба
 const SCALE_MIN = 25;
 const SCALE_MAX = 100;
 const SCALE_STEP = 25;
 const DEFAULT_SCALE = 100;
 
-// Значения эффектов
 const EFFECTS = {
   none: { range: { min: 0, max: 1 }, start: 1, step: 0.1, unit: '', filter: '', hideSlider: true },
   chrome: { range: { min: 0, max: 1 }, start: 1, step: 0.1, unit: '', filter: 'grayscale', hideSlider: false },
@@ -24,13 +22,11 @@ const EFFECTS = {
   heat: { range: { min: 1, max: 3 }, start: 3, step: 0.1, unit: '', filter: 'brightness', hideSlider: false },
 };
 
-// Функция установки масштаба
 const setScale = (value) => {
   scaleControlValue.value = `${value}%`;
   previewImage.style.transform = `scale(${value / 100})`;
 };
 
-// Обновление эффекта
 const updateEffect = (effect) => {
   const effectConfig = EFFECTS[effect];
 
@@ -41,22 +37,19 @@ const updateEffect = (effect) => {
     effectLevelContainer.classList.remove('hidden');
     effectLevelSlider.noUiSlider.updateOptions({
       range: effectConfig.range,
-      start: effectConfig.start, // Устанавливаем стартовое значение на максимальное
+      start: effectConfig.start,
       step: effectConfig.step,
     });
 
-    // Устанавливаем начальное значение уровня насыщенности на максимальное
     effectLevelSlider.noUiSlider.set(effectConfig.start);
     effectLevelValue.value = effectConfig.start;
 
-    // Применяем фильтр на максимальном значении
     previewImage.style.filter = effectConfig.filter
       ? `${effectConfig.filter}(${effectConfig.start}${effectConfig.unit})`
       : '';
   }
 };
 
-// Инициализация слайдера (с проверкой на существование)
 if (!effectLevelSlider.noUiSlider) {
   noUiSlider.create(effectLevelSlider, {
     range: EFFECTS.none.range,
@@ -66,7 +59,6 @@ if (!effectLevelSlider.noUiSlider) {
   });
 }
 
-// Применение выбранного эффекта при переключении
 effectsRadioButtons.forEach((radio) => {
   radio.addEventListener('change', (evt) => {
     const effect = evt.target.value;
@@ -74,7 +66,6 @@ effectsRadioButtons.forEach((radio) => {
   });
 });
 
-// Обновление фильтра при перемещении слайдера
 effectLevelSlider.noUiSlider.on('update', (_, handle, unencoded) => {
   const activeEffect = document.querySelector('.effects__radio:checked').value;
   const effectConfig = EFFECTS[activeEffect];
@@ -85,7 +76,6 @@ effectLevelSlider.noUiSlider.on('update', (_, handle, unencoded) => {
     : '';
 });
 
-// Обработчики кнопок для масштаба
 scaleControlSmaller.addEventListener('click', () => {
   let currentScale = parseInt(scaleControlValue.value, 10);
   if (currentScale > SCALE_MIN) {
@@ -102,5 +92,4 @@ scaleControlBigger.addEventListener('click', () => {
   }
 });
 
-// Установка масштаба по умолчанию
 setScale(DEFAULT_SCALE);

@@ -7,22 +7,22 @@ export const hashtagsInput = document.querySelector('.text__hashtags');
 export const descriptionInput = document.querySelector('.text__description');
 
 
-// Инициализация Pristine
 export const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
 });
 
 
-// Валидация описания
 const validateDescription = (value) => !value || value.length <= MAX_COMMENT_LENGTH;
 
-// Валидация хэш-тегов
 const validateHashtagsParts = (value) => {
   if (value.trim() === '') {
     return { isCorrectCount: true, isUniqueHash: true, isTrueHash: true };
   }
-  const hashtags = value.split(' ').map((hashtag) => hashtag.toLowerCase());
+
+  // Удаляем лишние пробелы и разбиваем строку по пробелам
+  const hashtags = value.trim().split(/\s+/).map((hashtag) => hashtag.toLowerCase());
+
   const isCorrectCount = hashtags.length <= MAX_HASH_COUNT;
   const isUniqueHash = new Set(hashtags).size === hashtags.length;
   let isTrueHash = true;
@@ -55,7 +55,7 @@ const getHashMessage = (value) => {
     return 'Неправильный хэш-тег';
   }
 };
-// Добавляем кастомные валидаторы
+
 pristine.addValidator(hashtagsInput, validateHashtags, getHashMessage);
 pristine.addValidator(descriptionInput, validateDescription, 'Комментарий не может быть длиннее 140 символов');
 

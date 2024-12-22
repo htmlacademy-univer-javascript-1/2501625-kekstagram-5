@@ -19,17 +19,15 @@ const setScale = (value) => {
   previewImage.style.transform = `scale(${value / 100})`;
 };
 
-// Сброс эффектов
 const resetEffects = () => {
   document.querySelector('#effect-none').checked = true;
   previewImage.style.filter = '';
   effectLevelContainer.classList.add('hidden');
-  effectLevelSlider.noUiSlider.set(0); // Сбрасываем слайдер
+  effectLevelSlider.noUiSlider.set(0);
 
   setScale(DEFAULT_SCALE);
 };
 
-// Обработчик клавиши Escape для сообщения
 const onMessageEscKeydown = (evt) => {
   if (isEscapeKey(evt) && checkTypeMessage) {
     evt.preventDefault();
@@ -37,7 +35,6 @@ const onMessageEscKeydown = (evt) => {
   }
 };
 
-// Обработчик клика по фону сообщения
 const onMessageOutsideClick = (evt) => {
   const messageElement = checkTypeMessage();
   if (evt.target === messageElement) {
@@ -45,7 +42,6 @@ const onMessageOutsideClick = (evt) => {
   }
 };
 
-// Закрытие сообщения
 function closeMessageBox() {
   document.removeEventListener('keydown', onMessageEscKeydown);
   document.removeEventListener('click', onMessageOutsideClick);
@@ -55,32 +51,16 @@ function closeMessageBox() {
   }
 }
 
-// const openMessageBox = (typeMessage) => {
-//   const message = typeMessage === 'success' ? successMessageTemplateElement.cloneNode(true) : errorMessageTemplateElement.cloneNode(true);
-//   const messageButton = message.querySelector(`.${typeMessage}__button`);
 
-//   document.body.append(message);
-
-//   messageButton.addEventListener('click', () => {
-//     closeMessageBox();
-//   });
-
-//   document.addEventListener('keydown', onMessageEscKeydown);
-//   document.addEventListener('click', onMessageOutsideClick);
-// };
-
-
-// Переработка обработчиков для формы
-const onDocumentKeydown = (evt, closeFormCallback) => {
+const onDocumentKeydown = (evt) => {
   const isFocus = [hashtagsInput, descriptionInput].some((x) => x === evt.target);
   if (isEscapeKey(evt) && !checkTypeMessage() && !isFocus) {
     evt.preventDefault();
-    closeFormCallback();
+    closeUploadForm();
   }
 };
 
-
-const closeUploadForm = () => {
+function closeUploadForm() {
   form.reset();
   pristine.reset();
   resetEffects();
@@ -89,7 +69,7 @@ const closeUploadForm = () => {
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   cancelButton.removeEventListener('click', closeUploadForm);
-};
+}
 
 const openUploadForm = () => {
   uploadOverlay.classList.remove('hidden');
@@ -126,13 +106,6 @@ noUiSlider.create(effectLevelSlider, {
   connect: 'lower',
 });
 
-
-// const onEscKeydown = (evt, removeCallback) => {
-//   if (evt.key === 'Escape') {
-//     evt.preventDefault();
-//     removeCallback();
-//   }
-// };
 
 const showSuccessMessage = () => {
   const successTemplate = document.querySelector('#success').content;
@@ -180,11 +153,8 @@ const showErrorMessage = () => {
   document.addEventListener('keydown', onMessageEscKeydown);
 };
 
-
-// Обработчик отправки формы
 form.addEventListener('submit', async (evt) => {
-  const isValid = pristine.validate(); // Проверка валидности
-
+  const isValid = pristine.validate();
   if (!isValid) {
     evt.preventDefault();
     return;

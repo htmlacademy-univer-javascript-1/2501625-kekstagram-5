@@ -6,13 +6,14 @@ const fileInput = document.querySelector('.img-upload__input');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
 const cancelButton = document.querySelector('.img-upload__cancel');
 export const previewImage = document.querySelector('.img-upload__preview img');
-const DEFAULT_SCALE = 100;
 
 const effectLevelSlider = document.querySelector('.effect-level__slider');
 const effectLevelContainer = document.querySelector('.img-upload__effect-level');
 const scaleControlValue = document.querySelector('.scale__control--value');
 const isEscapeKey = (evt) => evt.key === 'Escape';
-const checkTypeMessage = () => document.querySelector('.success, .error');
+const getMessageElement = () => document.querySelector('.success, .error');
+
+const DEFAULT_SCALE = 100;
 
 const setScale = (value) => {
   scaleControlValue.value = `${value}%`;
@@ -29,14 +30,14 @@ const resetEffects = () => {
 };
 
 const onMessageEscKeydown = (evt) => {
-  if (isEscapeKey(evt) && checkTypeMessage) {
+  if (isEscapeKey(evt) && getMessageElement) {
     evt.preventDefault();
     closeMessageBox();
   }
 };
 
 const onMessageOutsideClick = (evt) => {
-  const messageElement = checkTypeMessage();
+  const messageElement = getMessageElement();
   if (evt.target === messageElement) {
     closeMessageBox();
   }
@@ -45,7 +46,7 @@ const onMessageOutsideClick = (evt) => {
 function closeMessageBox() {
   document.removeEventListener('keydown', onMessageEscKeydown);
   document.removeEventListener('click', onMessageOutsideClick);
-  const messageElement = checkTypeMessage();
+  const messageElement = getMessageElement();
   if (messageElement) {
     messageElement.remove();
   }
@@ -54,7 +55,7 @@ function closeMessageBox() {
 
 const onDocumentKeydown = (evt) => {
   const isFocus = [hashtagsInput, descriptionInput].some((x) => x === evt.target);
-  if (isEscapeKey(evt) && !checkTypeMessage() && !isFocus) {
+  if (isEscapeKey(evt) && !getMessageElement() && !isFocus) {
     evt.preventDefault();
     closeUploadForm();
   }
@@ -107,49 +108,26 @@ noUiSlider.create(effectLevelSlider, {
 });
 
 
-const showSuccessMessage = () => {
-  const successTemplate = document.querySelector('#success').content;
-  const successElement = successTemplate.cloneNode(true);
-  document.body.append(successElement);
+const showMessage = (type) => {
+  const template = document.querySelector(`#${type}`).content;
+  const messageElement = template.cloneNode(true);
+  document.body.append(messageElement);
 
-  const successButton = document.querySelector('.success__button');
-  const successModal = document.querySelector('.success');
+  const messageButton = document.querySelector(`.${type}__button`);
+  const messageModal = document.querySelector(`.${type}`);
 
-  const removeSuccessMessage = () => {
-    successModal.remove();
+  const removeMessage = () => {
+    messageModal.remove();
     document.removeEventListener('keydown', onMessageEscKeydown);
   };
 
-  successModal.addEventListener('click', (evt) => {
-    if (!evt.target.closest('.success__inner')) {
-      removeSuccessMessage();
+  messageModal.addEventListener('click', (evt) => {
+    if (!evt.target.closest(`.${type}__inner`)) {
+      removeMessage();
     }
   });
 
-  successButton.addEventListener('click', removeSuccessMessage);
-  document.addEventListener('keydown', onMessageEscKeydown);
-};
-
-const showErrorMessage = () => {
-  const errorTemplate = document.querySelector('#error').content;
-  const errorElement = errorTemplate.cloneNode(true);
-  document.body.append(errorElement);
-
-  const errorButton = document.querySelector('.error__button');
-  const errorModal = document.querySelector('.error');
-
-  const removeErrorMessage = () => {
-    errorModal.remove();
-    document.removeEventListener('keydown', onMessageEscKeydown);
-  };
-
-  errorModal.addEventListener('click', (evt) => {
-    if (!evt.target.closest('.error__inner')) {
-      removeErrorMessage();
-    }
-  });
-
-  errorButton.addEventListener('click', removeErrorMessage);
+  messageButton.addEventListener('click', removeMessage);
   document.addEventListener('keydown', onMessageEscKeydown);
 };
 
@@ -170,17 +148,17 @@ form.addEventListener('submit', async (evt) => {
   try {
     await unloadData(
       () => {
-        showSuccessMessage();
+        showMessage('success');
         closeUploadForm();
       },
       () => {
-        showErrorMessage();
+        showMessage('error');
       },
       'POST',
       formData
     );
   } catch (error) {
-    showErrorMessage();
+    showMessage('error');
   } finally {
 
     submitButton.disabled = false;

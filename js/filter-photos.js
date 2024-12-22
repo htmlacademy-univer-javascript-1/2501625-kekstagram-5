@@ -1,14 +1,19 @@
 import { shuffleArray, debounce } from './util.js';
-import { drawMiniature, removePictures } from './draw_miniature.js';
-import { photos } from './main.js';
-
-const COUNT_OF_FILTER = 10;
-const ACTIVE_CLASS = 'img-filters__button--active';
+import { renderMiniatures, removePictures } from './draw-miniature.js';
 
 const imgFilters = document.querySelector('.img-filters');
 const imgFiltersForm = imgFilters.querySelector('.img-filters__form');
 
 const isButton = (evt) => evt.target.tagName === 'BUTTON';
+
+const COUNT_OF_FILTER = 10;
+const ACTIVE_CLASS = 'img-filters__button--active';
+
+let photos = [];
+
+document.addEventListener('photosLoaded', (evt) => {
+  photos = evt.detail;
+});
 
 const applyFilter = (filterId) => {
   switch (filterId) {
@@ -25,9 +30,8 @@ const applyFilter = (filterId) => {
 const onImgFiltersFormClick = debounce((evt) => {
   if (isButton(evt)) {
     removePictures();
-
     const filteredPhotos = applyFilter(evt.target.id);
-    drawMiniature(filteredPhotos);
+    renderMiniatures(filteredPhotos);
   }
 });
 

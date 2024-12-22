@@ -27,7 +27,7 @@ const setScale = (value) => {
   previewImage.style.transform = `scale(${value / 100})`;
 };
 
-const updateEffect = (effect) => {
+const applyEffectToImage = (effect) => {
   const effectConfig = EFFECTS[effect];
 
   if (effectConfig.hideSlider) {
@@ -59,14 +59,12 @@ if (!effectLevelSlider.noUiSlider) {
   });
 }
 
-effectsRadioButtons.forEach((radio) => {
-  radio.addEventListener('change', (evt) => {
-    const effect = evt.target.value;
-    updateEffect(effect);
-  });
-});
+const onEffectChange = (evt) => {
+  const effect = evt.target.value;
+  applyEffectToImage(effect);
+};
 
-effectLevelSlider.noUiSlider.on('update', (_, handle, unencoded) => {
+const onEffectLevelUpdate = (_, handle, unencoded) => {
   const activeEffect = document.querySelector('.effects__radio:checked').value;
   const effectConfig = EFFECTS[activeEffect];
   const value = unencoded[handle];
@@ -74,22 +72,20 @@ effectLevelSlider.noUiSlider.on('update', (_, handle, unencoded) => {
   previewImage.style.filter = effectConfig.filter
     ? `${effectConfig.filter}(${value}${effectConfig.unit})`
     : '';
-});
+};
 
-scaleControlSmaller.addEventListener('click', () => {
+effectsRadioButtons.forEach((radio) => radio.addEventListener('change', onEffectChange));
+effectLevelSlider.noUiSlider.on('update', onEffectLevelUpdate);
+
+const updateScale = (direction) => {
   let currentScale = parseInt(scaleControlValue.value, 10);
-  if (currentScale > SCALE_MIN) {
-    currentScale -= SCALE_STEP;
+  if ((direction === 'smaller' && currentScale > SCALE_MIN) || (direction === 'bigger' && currentScale < SCALE_MAX)) {
+    currentScale += direction === 'smaller' ? -SCALE_STEP : SCALE_STEP;
     setScale(currentScale);
   }
-});
+};
 
-scaleControlBigger.addEventListener('click', () => {
-  let currentScale = parseInt(scaleControlValue.value, 10);
-  if (currentScale < SCALE_MAX) {
-    currentScale += SCALE_STEP;
-    setScale(currentScale);
-  }
-});
+scaleControlSmaller.addEventListener('click', () => updateScale('smaller'));
+scaleControlBigger.addEventListener('click', () => updateScale('bigger'));
 
 setScale(DEFAULT_SCALE);

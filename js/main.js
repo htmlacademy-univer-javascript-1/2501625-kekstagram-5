@@ -1,15 +1,18 @@
-import {drawMiniature} from './draw_miniature.js';
+import {renderMiniatures} from './draw-miniature.js';
+import {loadData} from './api.js';
 import './form-handler.js';
 import './filter.js';
-import {loadData} from './api.js';
 import './filter-photos.js';
 
-let photos = [];
+
+let loadedPhotos = [];
 
 const onSuccess = (data) => {
-  photos = data.slice();
-
-  drawMiniature(photos);
+  loadedPhotos = data.slice();
+  renderMiniatures(loadedPhotos);
+  // Генерируем событие о загрузке данных
+  const event = new CustomEvent('photosLoaded', { detail: loadedPhotos });
+  document.dispatchEvent(event);
 };
 
 const onFail = () => {
@@ -35,4 +38,3 @@ const onFail = () => {
 
 loadData(onSuccess, onFail);
 
-export{photos};

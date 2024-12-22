@@ -1,10 +1,10 @@
 const shuffleArray = (arr) => {
-  const arr1 = arr.slice();
-  for (let i = arr1.length - 1; i > 0; i--) {
+  const array = arr.slice();
+  for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [arr1[i], arr1[j]] = [arr1[j], arr1[i]];
+    [array[i], array[j]] = [array[j], array[i]];
   }
-  return arr1;
+  return array;
 };
 
 const debounce = (callback, timeoutDelay = 500) => {
@@ -15,4 +15,11 @@ const debounce = (callback, timeoutDelay = 500) => {
   };
 };
 
-export {shuffleArray, debounce};
+const endWordComment = (number) => {
+  if (number % 10 === 1 && number % 100 !== 11){
+    return 'комментария';
+  }
+  return 'комментариев';
+};
+
+export {endWordComment, shuffleArray, debounce};

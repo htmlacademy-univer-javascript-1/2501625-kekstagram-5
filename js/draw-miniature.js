@@ -1,8 +1,8 @@
-import { openBigPicture } from './draw_fullImg.js';
+import { openBigPicture } from './draw-fullImg.js';
 
 const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-const fragment = document.createDocumentFragment();
+const miniaturesFragment = document.createDocumentFragment();
 const imgFiltersSection = document.querySelector('.img-filters');
 
 const createMiniPicture = (photo) => {
@@ -25,23 +25,23 @@ const createMiniPicture = (photo) => {
   return picture;
 };
 
-const drawMiniature = (data) => {
-  const photos = Array.isArray(data) ? data : [];
+const renderMiniatures = (data) => {
+  const photos = data;
 
   photos.forEach((photo) => {
     const pictureElement = createMiniPicture(photo);
-    fragment.appendChild(pictureElement);
+    miniaturesFragment.appendChild(pictureElement);
   });
 
-  picturesContainer.appendChild(fragment);
+  picturesContainer.appendChild(miniaturesFragment);
   imgFiltersSection.classList.remove('img-filters--inactive');
 };
 
-const photos1 = picturesContainer.getElementsByClassName('picture');
+const miniaturePictures = picturesContainer.getElementsByClassName('picture');
 const removePictures = () => {
-  if (photos1) {
-    [...photos1].forEach((photo) => photo.remove());
+  if (miniaturePictures) {
+    [...miniaturePictures].forEach((photo) => photo.remove());
   }
 };
 
-export { drawMiniature, removePictures};
+export {renderMiniatures, removePictures};

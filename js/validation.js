@@ -1,11 +1,10 @@
-const MAX_COMMENT_LENGTH = 140;
-const MAX_HASH_COUNT = 5;
-const HASH_PATTERN = /^#[A-Za-z0-9А-Яа-я]{1,19}$/;
-
 export const form = document.querySelector('.img-upload__form');
 export const hashtagsInput = document.querySelector('.text__hashtags');
 export const descriptionInput = document.querySelector('.text__description');
 
+const MAX_COMMENT_LENGTH = 140;
+const MAX_HASH_COUNT = 5;
+const HASH_PATTERN = /^#[A-Za-z0-9А-Яа-я]{1,19}$/;
 
 export const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -20,7 +19,6 @@ const validateHashtagsParts = (value) => {
     return { isCorrectCount: true, isUniqueHash: true, isTrueHash: true };
   }
 
-  // Удаляем лишние пробелы и разбиваем строку по пробелам
   const hashtags = value.trim().split(/\s+/).map((hashtag) => hashtag.toLowerCase());
 
   const isCorrectCount = hashtags.length <= MAX_HASH_COUNT;

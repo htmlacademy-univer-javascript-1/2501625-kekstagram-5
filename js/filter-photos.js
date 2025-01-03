@@ -1,13 +1,13 @@
 import { shuffleArray, debounce } from './util.js';
 import { renderMiniatures, removePictures } from './draw-miniature.js';
 
+const COUNT_OF_FILTER = 10;
+const ACTIVE_CLASS = 'img-filters__button--active';
+
 const imgFilters = document.querySelector('.img-filters');
 const imgFiltersForm = imgFilters.querySelector('.img-filters__form');
 
 const isButton = (evt) => evt.target.tagName === 'BUTTON';
-
-const COUNT_OF_FILTER = 10;
-const ACTIVE_CLASS = 'img-filters__button--active';
 
 let photos = [];
 

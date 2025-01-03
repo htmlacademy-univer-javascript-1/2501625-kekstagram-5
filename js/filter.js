@@ -1,13 +1,5 @@
 import { previewImage } from './form-handler.js';
 
-const scaleControlSmaller = document.querySelector('.scale__control--smaller');
-const scaleControlBigger = document.querySelector('.scale__control--bigger');
-const scaleControlValue = document.querySelector('.scale__control--value');
-const effectLevelSlider = document.querySelector('.effect-level__slider');
-const effectLevelValue = document.querySelector('.effect-level__value');
-const effectsRadioButtons = document.querySelectorAll('.effects__radio');
-const effectLevelContainer = document.querySelector('.img-upload__effect-level');
-
 const SCALE_MIN = 25;
 const SCALE_MAX = 100;
 const SCALE_STEP = 25;
@@ -21,6 +13,14 @@ const EFFECTS = {
   phobos: { range: { min: 0, max: 3 }, start: 3, step: 0.1, unit: 'px', filter: 'blur', hideSlider: false },
   heat: { range: { min: 1, max: 3 }, start: 3, step: 0.1, unit: '', filter: 'brightness', hideSlider: false },
 };
+
+const scaleControlSmaller = document.querySelector('.scale__control--smaller');
+const scaleControlBigger = document.querySelector('.scale__control--bigger');
+const scaleControlValue = document.querySelector('.scale__control--value');
+const effectLevelSlider = document.querySelector('.effect-level__slider');
+const effectLevelValue = document.querySelector('.effect-level__value');
+const effectsRadioButtons = document.querySelectorAll('.effects__radio');
+const effectLevelContainer = document.querySelector('.img-upload__effect-level');
 
 const setScale = (value) => {
   scaleControlValue.value = `${value}%`;

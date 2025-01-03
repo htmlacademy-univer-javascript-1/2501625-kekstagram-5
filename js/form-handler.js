@@ -1,6 +1,8 @@
 import { form, pristine, hashtagsInput, descriptionInput } from './validation.js';
 import { unloadData } from './api.js';
 
+const DEFAULT_SCALE = 100;
+
 const body = document.body;
 const fileInput = document.querySelector('.img-upload__input');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
@@ -12,8 +14,6 @@ const effectLevelContainer = document.querySelector('.img-upload__effect-level')
 const scaleControlValue = document.querySelector('.scale__control--value');
 const isEscapeKey = (evt) => evt.key === 'Escape';
 const getMessageElement = () => document.querySelector('.success, .error');
-
-const DEFAULT_SCALE = 100;
 
 const setScale = (value) => {
   scaleControlValue.value = `${value}%`;

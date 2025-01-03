@@ -1,5 +1,7 @@
 import { endWordComment } from './util.js';
 
+const COMMENTS_STEP = 5;
+
 const bigPicture = document.querySelector('.big-picture');
 const bigPictureImg = bigPicture.querySelector('.big-picture__img img');
 const likesCount = bigPicture.querySelector('.likes-count');
@@ -10,7 +12,6 @@ const closeButton = bigPicture.querySelector('#picture-cancel');
 const commentCountBlock = bigPicture.querySelector('.social__comment-count');
 const commentsLoader = bigPicture.querySelector('.comments-loader');
 
-const COMMENTS_STEP = 5;
 
 let commentsToShow = [];
 let displayedCommentsCount = 0;
